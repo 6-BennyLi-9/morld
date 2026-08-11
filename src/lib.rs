@@ -1,3 +1,5 @@
-﻿#[cfg(test)]
+﻿mod plugin_util;
+
+#[cfg(test)]
 mod test{
 }
