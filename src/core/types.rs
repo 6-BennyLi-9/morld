@@ -11,6 +11,18 @@ pub struct MorldCoreRuntime {
 	pub key_final: HashMap<KeyCode, f64>,
 }
 
+impl MorldCoreRuntime{
+	pub fn key_input_time(&self, key: KeyCode, time: f64) -> Result<f64, ()> {
+		if self.key_input.contains_key(&key) {
+			Ok(time - self.key_input[&key])
+		} else if self.key_final.contains_key(&key) {
+			Ok(self.key_final[&key])
+		} else {
+			Err(())
+		}
+	}
+}
+
 ///定义标准实体
 #[derive(Component, Debug)]
 pub struct Entity{
