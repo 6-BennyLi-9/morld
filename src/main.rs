@@ -1,3 +1,5 @@
+mod core;
+
 use bevy::prelude::*;
 use bevy::sprite_render::Wireframe2dPlugin;
 
