@@ -1,9 +1,12 @@
 ﻿use bevy::prelude::*;
+use std::collections::HashMap;
 
 ///核心运行时
 #[derive(Resource, Default, Debug)]
 struct MorldCoreRuntime {
 	fps: u32,
+	///按下的按键以及按下的时间戳
+	key_input: HashMap<KeyCode, f64>
 }
 
 ///定义标准实体
@@ -51,11 +54,25 @@ fn runtime_update(
 ){
 	core.fps = (1f64 / time.delta_secs_f64()) as u32;
 }
+fn key_input_update(
+	core: ResMut<MorldCoreRuntime>,
+	input: Res<ButtonInput<KeyCode>>,
+	time: Res<Time>,
+){
+	for item in input.get_just_pressed(){
+		core.key_input.insert(*item, time.elapsed_secs_f64());
+	}
+	for item in input.get_just_released(){
+		core.key_input.remove(item);
+	}
+}
 
 pub struct ResInitial;
 impl Plugin for ResInitial {
 	fn build(&self, app: &mut App) {
-		app.init_resource::<MorldCoreRuntime>()
-			.add_systems(Update, runtime_update);
+		app
+			.init_resource::<MorldCoreRuntime>()
+			.add_systems(Update, runtime_update)
+			.add_systems(Update, key_input_update);
 	}
 }
