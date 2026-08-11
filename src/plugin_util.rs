@@ -2,9 +2,8 @@
 use bevy::prelude::Component;
 use std::marker::PhantomData;
 
-///
 pub struct MorldPlugin<T> {
-	pub phantom_t: PhantomData<T>,
+	pub phantom: PhantomData<T>,
 }
 
 /// Implementation of `MorldPlugin` as a Plugin with
@@ -23,7 +22,7 @@ impl<T> MorldPlugin<T> {
 impl<T> Default for MorldPlugin<T> {
 	fn default() -> Self {
 		Self {
-			phantom_t: PhantomData,
+			phantom: PhantomData,
 		}
 	}
 }
