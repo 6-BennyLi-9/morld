@@ -8,7 +8,7 @@ struct MorldCoreRuntime {
 
 ///定义标准实体
 #[derive(Component, Debug)]
-struct Entity{
+pub struct Entity{
 	id: u32,
 	pos: Vec2,
 }
@@ -43,4 +43,19 @@ trait WithMana{
 
 	/// 如果目标不适配扩大法力值词条，返回 Err
 	fn mana_expand(&self, amount: u32) -> Result<>;
+}
+
+fn runtime_update(
+	core: Res<MorldCoreRuntime>,
+	time: Res<Time>,
+){
+	core.fps = (1f64 / time.delta_secs_f64()) as u32;
+}
+
+pub struct ResInitial;
+impl Plugin for ResInitial {
+	fn build(&self, app: &mut App) {
+		app.init_resource::<MorldCoreRuntime>()
+			.add_systems(Update, runtime_update);
+	}
 }
