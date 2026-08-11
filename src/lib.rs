@@ -1,10 +1,9 @@
-﻿mod plugin_util;
-mod util;
+﻿mod util;
 
 #[cfg(test)]
 mod test{
-	use bevy::reflect::list::List;
 	use crate::util::types::VecEx;
+	use bevy::reflect::list::List;
 
 	#[test]
 	fn types_override() {
