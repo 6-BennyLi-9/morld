@@ -1,13 +1,9 @@
 mod core;
 
-use std::io::SeekFrom::Start;
-use std::thread::sleep;
-use std::time::Duration;
 use crate::core::MorldCore;
 use bevy::prelude::*;
-use bevy_fluent::{BundleAsset};
 use crate::core::locales::{from_locale};
-use crate::core::types::MorldCoreRuntime;
+use crate::core::types::{MorldCoreRuntime, MorldLang};
 
 fn main() {
 	App::new()
@@ -31,11 +27,10 @@ pub fn print(
 	}
 }
 fn display_message(
-	asset_server: Res<AssetServer>,
-	assets: Res<Assets<BundleAsset>>,
-	core: Res<MorldCoreRuntime>
+	core: Res<MorldCoreRuntime>,
+	lang: Res<MorldLang>
 ) {
-	if let Some(val) = from_locale("debug", &asset_server, &assets, &core) {
+	if let Some(val) = from_locale("debug", &lang, &core) {
 		info!("{}", val);
 	} else {
 		info!("NONE");
