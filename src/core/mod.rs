@@ -1,9 +1,10 @@
-﻿use bevy::app::{PluginGroup, PluginGroupBuilder};
-use crate::core::locales::FluentInitial;
+﻿use crate::core::locales::FluentInitial;
 use crate::core::types::ResInitial;
+use bevy::app::{PluginGroup, PluginGroupBuilder};
 
 pub mod types;
 pub mod locales;
+pub mod process;
 
 pub struct MorldCore;
 
