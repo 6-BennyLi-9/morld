@@ -23,6 +23,22 @@ impl MorldCoreRuntime{
 	}
 }
 
+#[derive(Component, Debug, Default)]
+pub struct MData{
+	pub basic: f32,
+	pub additions: Vec<f32>,
+	pub add_multipliers: Vec<f32>,
+	pub times_multipliers: Vec<f32>,
+}
+
+impl MData{
+	pub fn final_value(&self) -> f32{
+		(self.basic + self.additions.iter().sum::<f32>())
+			* (self.add_multipliers.iter().sum::<f32>() + 1f32)
+			* (self.times_multipliers.iter().map(|x| x + 1f32).product::<f32>())
+	}
+}
+
 ///定义标准实体
 #[derive(Component, Debug, Default)]
 pub struct Entity{
@@ -35,6 +51,9 @@ pub struct Entity{
 pub struct Carnal{
 	health: f32,
 	health_maximum: f32,
+
+	amour: MData,
+	magic_resistance: MData,
 }
 
 ///标识携带法力值的实体
