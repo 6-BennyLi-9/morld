@@ -8,7 +8,7 @@ fn main() {
 	App::new()
 		.add_plugins(DefaultPlugins)
 		.add_plugins(MorldCore)
-		.add_systems(Update, print)
+		// .add_systems(Update, print)
 		.run();
 }
 
