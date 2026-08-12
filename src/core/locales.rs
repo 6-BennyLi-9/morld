@@ -14,7 +14,7 @@ pub fn load_locales(
 	mut commands: Commands,
 	asset_server: Res<AssetServer>,
 ) {
-	let handle = asset_server.load_folder("locales");
+	let handle = asset_server.load_folder("localization");
 	commands.insert_resource(LocaleFolder(handle));
 }
 
