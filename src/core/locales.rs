@@ -4,6 +4,7 @@ use bevy::asset::{Assets, LoadState};
 use bevy::prelude::{AssetServer, Handle, Message, MessageReader, MessageWriter, Res, ResMut, Resource};
 use bevy_fluent::{BundleAsset, FluentPlugin, Locale};
 use std::collections::HashMap;
+use unic_langid::langid;
 
 #[derive(Resource, Default)]
 pub struct MorldLang{
@@ -11,10 +12,6 @@ pub struct MorldLang{
 	pub lang_bundles: HashMap<String, BundleAsset>,
 }
 pub struct FluentInitial;
-
-fn code(locale_code: &str) -> Locale {
-	Locale::new(locale_code.parse().expect("Failed to parse locale code"))
-}
 #[derive(Message, Default, Clone)]
 pub struct BundleOpening{
 	pub lang: String,
@@ -124,7 +121,8 @@ impl Plugin for FluentInitial {
 	fn build(&self, app: &mut App) {
         app
 			.add_plugins(FluentPlugin)
-			.insert_resource(code("zh-CN"))
+			.insert_resource(Locale::new(langid!("en-US")))
+			.insert_resource(Locale::new(langid!("zh-CN")).with_default(langid!("en-US")))
 			.add_systems(Startup, lang_init)
 			.add_systems(Update, bundle_open_refresh)
 			.add_systems(Update, blocking_to_opening);
