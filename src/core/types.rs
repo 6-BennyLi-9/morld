@@ -1,5 +1,4 @@
-﻿use crate::core::locales::{BundleBlocking, BundleOpening, MorldLang};
-use bevy::prelude::*;
+﻿use bevy::prelude::*;
 use std::collections::HashMap;
 use sys_locale::get_locale;
 
@@ -107,11 +106,6 @@ impl Plugin for ResInitial {
 			.insert_resource(MorldCoreRuntime{
 				default_lang: String::from("zh-CN"),
 				current_lang: get_locale().unwrap_or_else(|| String::from("zh-CN")),
-				..Default::default()
-			})
-			.add_message::<BundleOpening>()
-			.add_message::<BundleBlocking>()
-			.insert_resource(MorldLang{
 				..Default::default()
 			})
 			.add_systems(Update, runtime_update)

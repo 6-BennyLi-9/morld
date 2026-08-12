@@ -1,8 +1,6 @@
 mod core;
 
-use self::core::locales::MorldLang;
 use crate::core::MorldCore;
-use crate::core::locales::from_locale;
 use crate::core::types::MorldCoreRuntime;
 use bevy::prelude::*;
 
@@ -26,12 +24,5 @@ pub fn print(
 }
 #[allow(dead_code)]
 fn display_message(
-	core: Res<MorldCoreRuntime>,
-	lang: Res<MorldLang>
 ) {
-	if let Some(val) = from_locale("debug", &lang, &core) {
-		info!("{}", val);
-	} else {
-		info!("NONE");
-	}
 }
