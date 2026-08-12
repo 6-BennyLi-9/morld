@@ -1,14 +1,17 @@
 mod core;
 
+use self::core::locales::MorldLang;
 use crate::core::MorldCore;
-use bevy::prelude::*;
+use crate::core::locales::from_locale;
 use crate::core::types::MorldCoreRuntime;
+use bevy::prelude::*;
 
 fn main() {
 	App::new()
 		.add_plugins(DefaultPlugins)
 		.add_plugins(MorldCore)
-		.add_systems(Update, print)
+		// .add_systems(Update, print)
+		// .add_systems(Update, display_message)
 		.run();
 }
 
@@ -19,5 +22,16 @@ pub fn print(
 ){
 	if let Ok(val) = core.key_input_time(KeyCode::Space, time.elapsed_secs_f64()) {
 		println!("{}", val);
+	}
+}
+#[allow(dead_code)]
+fn display_message(
+	core: Res<MorldCoreRuntime>,
+	lang: Res<MorldLang>
+) {
+	if let Some(val) = from_locale("debug", &lang, &core) {
+		info!("{}", val);
+	} else {
+		info!("NONE");
 	}
 }
