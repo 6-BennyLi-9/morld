@@ -28,6 +28,28 @@ pub struct BundleOpening{
 	pub lang: String,
 	pub handler:Handle<BundleAsset>,
 }
+#[derive(Message, Default, Clone)]
+pub struct BundleBlocking{
+	pub lang: String,
+	pub handler:Handle<BundleAsset>,
+}
+
+impl BundleOpening{
+	pub fn to_blocking(&self) -> BundleBlocking {
+		BundleBlocking{
+			lang: self.lang.clone(),
+			handler: self.handler.clone(),
+		}
+	}
+}
+impl BundleBlocking{
+	pub fn to_opening(&self) -> BundleOpening {
+		BundleOpening{
+			lang: self.lang.clone(),
+			handler: self.handler.clone(),
+		}
+	}
+}
 
 impl MorldCoreRuntime{
 	pub fn key_input_time(&self, key: KeyCode, time: f64) -> Result<f64, ()> {
@@ -121,7 +143,7 @@ fn lang_init(
 }
 fn bundle_open_refresh(
 	mut targets: MessageReader<BundleOpening>,
-	mut incomplete: MessageWriter<BundleOpening>,
+	mut incomplete: MessageWriter<BundleBlocking>,
 	asset_server: Res<AssetServer>,
 	assets: Res<Assets<BundleAsset>>,
 	mut lang: ResMut<MorldLang>,
@@ -130,8 +152,17 @@ fn bundle_open_refresh(
 		if let Some(LoadState::Loaded) = asset_server.get_load_state(&bundle.handler) {
 			lang.lang_bundles.insert(bundle.lang.clone(), assets.get(&bundle.handler).unwrap().clone());
 		} else {
-			incomplete.write(bundle.clone());
+			incomplete.write(bundle.to_blocking());
 		}
+	}
+}
+
+fn blocking_to_opening(
+	mut from: MessageReader<BundleBlocking>,
+	mut to: MessageWriter<BundleOpening>,
+){
+	for bundle in from.read() {
+		to.write(bundle.to_opening());
 	}
 }
 
@@ -145,12 +176,14 @@ impl Plugin for ResInitial {
 				..Default::default()
 			})
 			.add_message::<BundleOpening>()
+			.add_message::<BundleBlocking>()
 			.insert_resource(MorldLang{
 				..Default::default()
 			})
 			.add_systems(Startup, lang_init)
 			.add_systems(Update, runtime_update)
 			.add_systems(Update, key_input_update)
-			.add_systems(Update, bundle_open_refresh);
+			.add_systems(Update, bundle_open_refresh)
+			.add_systems(Update, blocking_to_opening);
 	}
 }
