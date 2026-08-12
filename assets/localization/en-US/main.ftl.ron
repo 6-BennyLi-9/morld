@@ -1,6 +1,6 @@
-﻿{
+﻿(
     locales: ["en-US"],
     resources: [
         "debug = DEBUG-EN-US",
     ],
-}
+)
