@@ -5,5 +5,5 @@ edition = "2024"
 
 [dependencies]
 sys-locale = "0.3"
-bevy = "0.19"
+bevy = {version = "0.19", features = ["default", "debug", "2d"]}
 bevy_fluent = "0.15"
