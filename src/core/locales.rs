@@ -19,9 +19,9 @@ fn load_localization(
 }
 
 pub fn read_locale_raw(
-	asset_server: Res<AssetServer>,
-	assets: Res<Assets<BundleAsset>>,
-	mut handle: Local<Option<Handle<BundleAsset>>>,
+	asset_server: &Res<AssetServer>,
+	assets: &Res<Assets<BundleAsset>>,
+	mut handle: &mut Local<Option<Handle<BundleAsset>>>,
 	locale_code: &str,
 	read_id: &str,
 ) -> Option<String> {

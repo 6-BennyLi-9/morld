@@ -28,9 +28,9 @@ pub fn print(
 fn display_message(
 	asset_server: Res<AssetServer>,
 	assets: Res<Assets<BundleAsset>>,
-	handle: Local<Option<Handle<BundleAsset>>>,
+	mut handle: Local<Option<Handle<BundleAsset>>>,
 ) {
-	if let Some(val) = read_locale_raw(asset_server, assets, handle, "zh-CN","debug") {
+	if let Some(val) = read_locale_raw(&asset_server, &assets, &mut handle, "zh-CN", "debug") {
 		info!("{}", val);
 	}
 }
