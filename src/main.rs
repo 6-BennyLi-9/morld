@@ -1,18 +1,16 @@
 mod core;
 
+use self::core::locales::MorldLang;
 use crate::core::MorldCore;
+use crate::core::locales::from_locale;
+use crate::core::types::MorldCoreRuntime;
 use bevy::prelude::*;
-use crate::core::locales::{from_locale};
-use crate::core::types::{MorldCoreRuntime, MorldLang};
 
 fn main() {
 	App::new()
 		.add_plugins(DefaultPlugins)
 		.add_plugins(MorldCore)
-		.add_systems(Update, display_message)
-		// .add_plugins(DefaultPlugins)
-		// .add_plugins(MorldCore)
-		// // .add_systems(Update, print)
+		// .add_systems(Update, print)
 		// .add_systems(Update, display_message)
 		.run();
 }
@@ -26,6 +24,7 @@ pub fn print(
 		println!("{}", val);
 	}
 }
+#[allow(dead_code)]
 fn display_message(
 	core: Res<MorldCoreRuntime>,
 	lang: Res<MorldLang>
