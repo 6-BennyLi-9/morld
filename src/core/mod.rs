@@ -3,7 +3,7 @@ use crate::core::locales::FluentInitial;
 use crate::core::types::ResInitial;
 
 pub mod types;
-mod locales;
+pub mod locales;
 
 pub struct MorldCore;
 

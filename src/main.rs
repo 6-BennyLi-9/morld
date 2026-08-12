@@ -1,7 +1,10 @@
 mod core;
 
+use bevy::asset::LoadState;
 use crate::core::MorldCore;
 use bevy::prelude::*;
+use bevy_fluent::{BundleAsset, Localization};
+use crate::core::locales::read_locale_raw;
 use crate::core::types::MorldCoreRuntime;
 
 fn main() {
@@ -9,6 +12,7 @@ fn main() {
 		.add_plugins(DefaultPlugins)
 		.add_plugins(MorldCore)
 		// .add_systems(Update, print)
+		.add_systems(Update, display_message)
 		.run();
 }
 
@@ -19,5 +23,14 @@ pub fn print(
 ){
 	if let Ok(val) = core.key_input_time(KeyCode::Space, time.elapsed_secs_f64()) {
 		println!("{}", val);
+	}
+}
+fn display_message(
+	asset_server: Res<AssetServer>,
+	assets: Res<Assets<BundleAsset>>,
+	handle: Local<Option<Handle<BundleAsset>>>,
+) {
+	if let Some(val) = read_locale_raw(asset_server, assets, handle, "zh-CN","debug") {
+		info!("{}", val);
 	}
 }
