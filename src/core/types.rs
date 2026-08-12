@@ -24,18 +24,30 @@ impl MorldCoreRuntime{
 }
 
 #[derive(Component, Debug, Default)]
+pub struct MFactor{
+	pub val: f32,
+	pub from: String,
+}
+
+impl MFactor{
+	pub fn new(val: f32, from: String) -> MFactor{ MFactor{val, from } }
+}
+
+
+
+#[derive(Component, Debug, Default)]
 pub struct MData{
 	pub basic: f32,
-	pub additions: Vec<f32>,
-	pub add_multipliers: Vec<f32>,
-	pub times_multipliers: Vec<f32>,
+	pub additions: Vec<MFactor>,
+	pub add_multipliers: Vec<MFactor>,
+	pub times_multipliers: Vec<MFactor>,
 }
 
 impl MData{
 	pub fn final_value(&self) -> f32{
-		(self.basic + self.additions.iter().sum::<f32>())
-			* (self.add_multipliers.iter().sum::<f32>() + 1f32)
-			* (self.times_multipliers.iter().map(|x| x + 1f32).product::<f32>())
+		(self.basic + self.additions.iter().map(|x| x.val).sum::<f32>())
+			* (self.add_multipliers.iter().map(|x| x.val).sum::<f32>() + 1f32)
+			* (self.times_multipliers.iter().map(|x| x.val + 1f32).product::<f32>())
 	}
 }
 
