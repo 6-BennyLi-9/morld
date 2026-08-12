@@ -2,6 +2,7 @@ use bevy::app::{App, Plugin, Update};
 use bevy::asset::LoadState;
 use bevy::prelude::{AssetServer, Assets, Handle, Local, Res};
 use bevy_fluent::{BundleAsset, FluentPlugin, Locale};
+use crate::core::types::MorldCoreRuntime;
 
 pub struct FluentInitial;
 
@@ -19,15 +20,12 @@ fn load_localization(
 pub fn from_locale_raw(
 	asset_server: &Res<AssetServer>,
 	assets: &Res<Assets<BundleAsset>>,
-	handle: &mut Local<Option<Handle<BundleAsset>>>,
 	locale_code: &str,
 	read_id: &str,
 ) -> Option<String> {
-	let handle = &*handle.get_or_insert_with(|| {
-		asset_server.load(format!("localization/{}.ftl.yml", locale_code))
-	});
-	if let Some(LoadState::Loaded) = asset_server.get_load_state(handle) {
-		let bundle = assets.get(handle).unwrap();
+	let handle :Handle<BundleAsset> = asset_server.load(format!("localization/{}.ftl.yml", locale_code));
+	if let Some(LoadState::Loaded) = asset_server.get_load_state(&handle) {
+		let bundle = assets.get(&handle).unwrap();
 		let message = bundle.get_message(read_id).expect(format!("Message '{}' not found in localization", read_id).as_str());
 
 		let pattern = message.value().expect("Message has no value");
@@ -36,6 +34,20 @@ pub fn from_locale_raw(
 		let value = bundle.format_pattern(pattern, None, &mut errors);
 		Some(value.parse().unwrap())
 	} else { None }
+}
+
+pub fn from_locale(
+	read_id: &str,
+	asset_server: &Res<AssetServer>,
+	assets: &Res<Assets<BundleAsset>>,
+	core: &Res<MorldCoreRuntime>,
+) -> Option<String> {
+	let temp = from_locale_raw(asset_server, assets, core.current_lang.as_str(), read_id);
+	if temp.is_some() {
+		temp
+	} else {
+		from_locale_raw(asset_server, assets, core.default_lang.as_str(), read_id)
+	}
 }
 
 impl Plugin for FluentInitial {

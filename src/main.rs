@@ -1,18 +1,23 @@
 mod core;
 
-use bevy::asset::LoadState;
+use std::io::SeekFrom::Start;
+use std::thread::sleep;
+use std::time::Duration;
 use crate::core::MorldCore;
 use bevy::prelude::*;
-use bevy_fluent::{BundleAsset, Localization};
-use crate::core::locales::from_locale_raw;
+use bevy_fluent::{BundleAsset};
+use crate::core::locales::{from_locale};
 use crate::core::types::MorldCoreRuntime;
 
 fn main() {
 	App::new()
 		.add_plugins(DefaultPlugins)
 		.add_plugins(MorldCore)
-		// .add_systems(Update, print)
 		.add_systems(Update, display_message)
+		// .add_plugins(DefaultPlugins)
+		// .add_plugins(MorldCore)
+		// // .add_systems(Update, print)
+		// .add_systems(Update, display_message)
 		.run();
 }
 
@@ -28,9 +33,11 @@ pub fn print(
 fn display_message(
 	asset_server: Res<AssetServer>,
 	assets: Res<Assets<BundleAsset>>,
-	mut handle: Local<Option<Handle<BundleAsset>>>,
+	core: Res<MorldCoreRuntime>
 ) {
-	if let Some(val) = from_locale_raw(&asset_server, &assets, &mut handle, "zh-CN", "debug") {
+	if let Some(val) = from_locale("debug", &asset_server, &assets, &core) {
 		info!("{}", val);
+	} else {
+		info!("NONE");
 	}
 }

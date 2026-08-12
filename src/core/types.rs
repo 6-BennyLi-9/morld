@@ -1,5 +1,6 @@
 ﻿use bevy::prelude::*;
 use std::collections::HashMap;
+use sys_locale::get_locale;
 
 ///核心运行时
 #[derive(Resource, Default, Debug)]
@@ -9,6 +10,9 @@ pub struct MorldCoreRuntime {
 	pub key_input: HashMap<KeyCode, f64>,
 	///刚松开的键及其曾经按下的时间
 	pub key_final: HashMap<KeyCode, f64>,
+
+	pub default_lang: String,
+	pub current_lang: String,
 }
 
 impl MorldCoreRuntime{
@@ -61,7 +65,13 @@ trait WithMana{
 	/// 如果目标不适配扩大法力值词条，返回 Err
 	fn mana_expand(&self, amount: u32) -> Result<>;
 }
-
+fn init_runtime(
+	mut core: ResMut<MorldCoreRuntime>,
+){
+	core.default_lang = String::from("zh-CN");
+	// core.current_lang = get_locale().unwrap_or_else(|| String::from("zh-CN"));
+	core.current_lang = String::from("en-US");
+}
 fn runtime_update(
 	mut core: ResMut<MorldCoreRuntime>,
 	time: Res<Time>,
@@ -88,6 +98,7 @@ impl Plugin for ResInitial {
 	fn build(&self, app: &mut App) {
 		app
 			.init_resource::<MorldCoreRuntime>()
+			.add_systems(Startup, init_runtime)
 			.add_systems(Update, runtime_update)
 			.add_systems(Update, key_input_update);
 	}
