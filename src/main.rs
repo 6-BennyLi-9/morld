@@ -4,7 +4,7 @@ use bevy::asset::LoadState;
 use crate::core::MorldCore;
 use bevy::prelude::*;
 use bevy_fluent::{BundleAsset, Localization};
-use crate::core::locales::read_locale_raw;
+use crate::core::locales::from_locale_raw;
 use crate::core::types::MorldCoreRuntime;
 
 fn main() {
@@ -30,7 +30,7 @@ fn display_message(
 	assets: Res<Assets<BundleAsset>>,
 	mut handle: Local<Option<Handle<BundleAsset>>>,
 ) {
-	if let Some(val) = read_locale_raw(&asset_server, &assets, &mut handle, "zh-CN", "debug") {
+	if let Some(val) = from_locale_raw(&asset_server, &assets, &mut handle, "zh-CN", "debug") {
 		info!("{}", val);
 	}
 }

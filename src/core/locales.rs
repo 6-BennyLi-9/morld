@@ -1,13 +1,11 @@
-use crate::core::types::MorldCoreRuntime;
-use bevy::app::{App, Plugin, Startup, Update};
+use bevy::app::{App, Plugin, Update};
 use bevy::asset::LoadState;
-use bevy::log::info;
-use bevy::prelude::{AssetServer, Assets, Bundle, Handle, Local, Res, ResMut};
+use bevy::prelude::{AssetServer, Assets, Handle, Local, Res};
 use bevy_fluent::{BundleAsset, FluentPlugin, Locale};
 
 pub struct FluentInitial;
 
-fn code(locale_code: &str) -> Locale{
+fn code(locale_code: &str) -> Locale {
 	Locale::new(locale_code.parse().expect("Failed to parse locale code"))
 }
 
@@ -18,10 +16,10 @@ fn load_localization(
 	let _ = handle.insert(asset_server.load("localization/zh-CN.ftl.yml"));
 }
 
-pub fn read_locale_raw(
+pub fn from_locale_raw(
 	asset_server: &Res<AssetServer>,
 	assets: &Res<Assets<BundleAsset>>,
-	mut handle: &mut Local<Option<Handle<BundleAsset>>>,
+	handle: &mut Local<Option<Handle<BundleAsset>>>,
 	locale_code: &str,
 	read_id: &str,
 ) -> Option<String> {
