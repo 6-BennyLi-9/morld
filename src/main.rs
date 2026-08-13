@@ -2,9 +2,8 @@ mod core;
 
 use crate::core::MorldCore;
 use bevy::prelude::*;
-use crate::core::audio::{PlaySound, SoundType};
 use crate::core::locales::{LocaleSettings, Localization};
-use crate::core::process::game_states::{Errors, MorldStates, OnError};
+use crate::core::process::game_states::{Errors, MorldStates};
 use crate::core::process::tasks::MorldTasks;
 
 fn main() {
@@ -28,12 +27,10 @@ fn display_message_1(
 	localization: Res<Localization>,
 	locale_settings: Res<LocaleSettings>,
 	mut errors: ResMut<Errors>,
-	mut error: MessageWriter<OnError>
 ) {
 	match localization.content(String::from("debug"), locale_settings) {
 		Err(_) => {
 			errors.errors.push("Cannot load locale item".to_owned());
-			error.write(Default::default());
 		}
 		Ok(val) => {
 			info!(val)
@@ -45,12 +42,10 @@ fn display_message_2(
 	localization: Res<Localization>,
 	locale_settings: Res<LocaleSettings>,
 	mut errors: ResMut<Errors>,
-	mut error: MessageWriter<OnError>
 ) {
 	match localization.content(String::from("debug50"), locale_settings) {
 		Err(_) => {
 			errors.errors.push("Cannot load locale item".to_owned());
-			error.write(Default::default());
 		}
 		Ok(val) => {
 			info!(val)
