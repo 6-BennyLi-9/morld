@@ -2,6 +2,7 @@ mod core;
 
 use crate::core::MorldCore;
 use bevy::prelude::*;
+use crate::core::audio::{PlaySound, SoundType};
 use crate::core::locales::{LocaleSettings, Localization};
 use crate::core::process::game_states::MorldStates;
 
@@ -23,10 +24,14 @@ pub fn print(
 fn display_message(
 	localization: Res<Localization>,
 	locale_settings: Res<LocaleSettings>,
+	mut error: MessageWriter<PlaySound>
 ) {
 	match localization.content(String::from("debug"), locale_settings) {
 		Err(_) => {
-			panic!("Error: Cannot find Object: debug")
+			error.write(PlaySound{
+				sound: SoundType::Ohno,
+				volume: 1.0,
+			});
 		}
 		Ok(val) => {
 			info!(val)
