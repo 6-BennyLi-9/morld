@@ -1,6 +1,8 @@
 ﻿use bevy::prelude::*;
 use bevy::audio::Volume;
 use bevy::ecs::message::MessageReader;
+use crate::core::process::tasks::InitialTasks::CameraSetup;
+use crate::core::process::tasks::MorldTasks;
 
 ///LOAD ALL AUDIOS
 #[derive(Resource)]
@@ -29,10 +31,13 @@ pub struct PlaySound {
 pub fn load_audio_assets(
 	mut commands: Commands,
 	asset_server: Res<AssetServer>,
+	mut tasks: ResMut<MorldTasks>,
 ) {
 	commands.insert_resource(AudioAssets {
 		ohno: asset_server.load("audio/ohno.ogg"),
 	});
+	
+	tasks.init.remove(&CameraSetup);
 }
 
 pub fn play_sound_effects(

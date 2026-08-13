@@ -1,10 +1,9 @@
-﻿use crate::core::locales::LocalePlugin;
-use crate::core::types::ResourcePlugin;
-use bevy::app::{PluginGroup, PluginGroupBuilder};
-use bevy::camera::Camera2d;
-use bevy::prelude::Commands;
+﻿use crate::core::audio::AudioPlugin;
+use crate::core::locales::LocalePlugin;
 use crate::core::process::MorldProcessPlugin;
+use crate::core::types::ResourcePlugin;
 use crate::core::ui::UIPlugin;
+use bevy::app::{PluginGroup, PluginGroupBuilder};
 
 pub mod types;
 pub mod locales;
@@ -21,5 +20,6 @@ impl PluginGroup for MorldCore {
 			.add(MorldProcessPlugin)
 			.add(LocalePlugin)
 			.add(UIPlugin)
+			.add(AudioPlugin)
 	}
 }
