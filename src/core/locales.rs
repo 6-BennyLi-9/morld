@@ -1,47 +1,61 @@
 use crate::core::process::tasks::InitialTasks::LoadLocales;
 use crate::core::process::tasks::MorldTasks;
 use bevy::app::{App, Plugin, Startup};
-use bevy::asset::{LoadState, LoadedFolder};
-use bevy::prelude::{AssetServer, Commands, Handle, Res, ResMut, Resource, Update};
-use bevy_fluent::{FluentPlugin, Locale, LocalizationBuilder};
-use unic_langid::langid;
+use bevy::prelude::{Res, ResMut, Resource};
+use std::collections::HashMap;
+use std::fs::File;
+use std::io::BufReader;
+use std::ops::Add;
+use std::path::Path;
+use sys_locale::get_locale;
 
 pub struct FluentInitial;
 
-/// The folder of locales. Const.
-#[derive(Resource)]
-pub struct LocaleFolder(Handle<LoadedFolder>);
+#[derive(Resource, Default)]
+pub struct LocaleSettings {
+	pub default_lang: String,
+	pub current_lang: String,
+}
+/// 用于定位翻译条目
+#[derive(Resource, Default)]
+pub struct Localization{
 
-pub fn load_locales(
-	mut commands: Commands,
-	asset_server: Res<AssetServer>,
-) {
-	let handle = asset_server.load_folder("locales");
-	commands.insert_resource(LocaleFolder(handle));
+	/// < locale code < item title, item value > >
+	contents: HashMap<String, HashMap<String, String>>,
 }
 
-pub fn update_localizations(
-	mut commands: Commands,
-	localization_builder: LocalizationBuilder,
-	asset_server: Res<AssetServer>,
-	locale_folder: Res<LocaleFolder>,
+pub fn load_locales(
+	mut localization: ResMut<Localization>,
 	mut tasks: ResMut<MorldTasks>
 ) {
-	if let Some(LoadState::Loaded) = asset_server.get_load_state(&locale_folder.0) {
-		let localization = localization_builder.build(&locale_folder.0);
-		commands.remove_resource::<LocaleFolder>();
-		commands.insert_resource(localization);
+	localization.contents.insert(String::from("zh-CN"), HashMap::from([
+		(String::from("debug"), String::from("DEBUG-zh-CN")),
+	]));
 
-		tasks.init.remove(&LoadLocales);
+	tasks.init.remove(&LoadLocales);
+}
+
+impl Localization {
+	pub fn content(&self,id: String, settings: Res<LocaleSettings>) -> Result<String, String> {
+		if self.contents.contains_key(settings.current_lang.as_str()) && self.contents[settings.current_lang.as_str()].contains_key(id.as_str()) {
+			Ok(self.contents[settings.current_lang.as_str()][id.as_str()].clone()) // 成功读取 current
+		} else if self.contents.contains_key(settings.default_lang.as_str()) && self.contents[settings.default_lang.as_str()].contains_key(id.as_str()){
+			Ok(self.contents[settings.default_lang.as_str()][id.as_str()].clone()) // 成功读取 default
+		} else {
+			Err(format!("cannot spot value: {}", id))
+		}
 	}
 }
 
 impl Plugin for FluentInitial {
 	fn build(&self, app: &mut App) {
         app
-			.add_plugins(FluentPlugin)
-			.insert_resource(Locale::new(langid!("zh-CN")))
-			.add_systems(Startup, load_locales)
-			.add_systems(Update, update_localizations);
+			.insert_resource(LocaleSettings{
+				default_lang: String::from("zh-CN"),
+				current_lang: get_locale().unwrap_or_else(|| String::from("zh-CN")),
+				..Default::default()
+			})
+			.insert_resource(Localization::default())
+			.add_systems(Startup, load_locales);
 	}
 }

@@ -1,10 +1,8 @@
 mod core;
 
 use crate::core::MorldCore;
-use crate::core::types::MorldCoreRuntime;
 use bevy::prelude::*;
-use bevy_fluent::Localization;
-use fluent_content::Content;
+use crate::core::locales::{LocaleSettings, Localization};
 use crate::core::process::game_states::MorldStates;
 
 fn main() {
@@ -23,13 +21,14 @@ pub fn print(
 }
 #[allow(dead_code)]
 fn display_message(
-	localization: Res<Localization>
+	localization: Res<Localization>,
+	locale_settings: Res<LocaleSettings>,
 ) {
-	match localization.content("debug") {
-		None => {
+	match localization.content(String::from("debug"), locale_settings) {
+		Err(_) => {
 			panic!("Error: Cannot find Object: debug")
 		}
-		Some(val) => {
+		Ok(val) => {
 			info!(val)
 		}
 	};

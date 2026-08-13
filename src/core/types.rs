@@ -1,6 +1,5 @@
 ﻿use bevy::prelude::*;
 use std::collections::HashMap;
-use sys_locale::get_locale;
 
 ///核心运行时
 #[derive(Resource, Default, Debug)]
@@ -10,9 +9,6 @@ pub struct MorldCoreRuntime {
 	pub key_input: HashMap<KeyCode, f64>,
 	///刚松开的键及其曾经按下的时间
 	pub key_final: HashMap<KeyCode, f64>,
-
-	pub default_lang: String,
-	pub current_lang: String,
 }
 
 impl MorldCoreRuntime{
@@ -103,11 +99,7 @@ pub struct ResInitial;
 impl Plugin for ResInitial {
 	fn build(&self, app: &mut App) {
 		app
-			.insert_resource(MorldCoreRuntime{
-				default_lang: String::from("zh-CN"),
-				current_lang: get_locale().unwrap_or_else(|| String::from("zh-CN")),
-				..Default::default()
-			})
+			.insert_resource(MorldCoreRuntime::default())
 			.add_systems(Update, runtime_update)
 			.add_systems(Update, key_input_update);
 	}
