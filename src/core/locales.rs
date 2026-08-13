@@ -9,7 +9,7 @@ use std::ops::Add;
 use std::path::Path;
 use sys_locale::get_locale;
 
-pub struct FluentInitial;
+pub struct LocalePlugin;
 
 #[derive(Resource, Default)]
 pub struct LocaleSettings {
@@ -47,7 +47,7 @@ impl Localization {
 	}
 }
 
-impl Plugin for FluentInitial {
+impl Plugin for LocalePlugin {
 	fn build(&self, app: &mut App) {
         app
 			.insert_resource(LocaleSettings{
