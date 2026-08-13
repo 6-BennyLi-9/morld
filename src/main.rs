@@ -3,30 +3,49 @@ mod core;
 use crate::core::MorldCore;
 use bevy::prelude::*;
 use crate::core::locales::{LocaleSettings, Localization};
-use crate::core::process::game_states::MorldStates;
+use crate::core::process::game_states::{Errors, MorldStates};
+use crate::core::process::tasks::MorldTasks;
 
 fn main() {
 	App::new()
 		.add_plugins(DefaultPlugins)
 		.add_plugins(MorldCore)
 		.add_systems(Update, print.run_if(in_state(MorldStates::INITIALIZING)))
-		.add_systems(OnEnter(MorldStates::MENU), display_message)
+		.add_systems(OnEnter(MorldStates::MENU), display_message_1)
+		.add_systems(OnEnter(MorldStates::MENU), display_message_2)
 		.run();
 }
 
 #[allow(dead_code)]
 pub fn print(
+	tasks: Res<MorldTasks>
 ){
-	info!("IN STATE: INITIALIZING")
+	info!("INITIALIZING for {:?}", tasks.init);
 }
 #[allow(dead_code)]
-fn display_message(
+fn display_message_1(
 	localization: Res<Localization>,
 	locale_settings: Res<LocaleSettings>,
+	mut errors: ResMut<Errors>,
 ) {
 	match localization.content(String::from("debug"), locale_settings) {
 		Err(_) => {
-			panic!("Error: Cannot find Object: debug")
+			errors.errors.push("Cannot load locale item".to_owned());
+		}
+		Ok(val) => {
+			info!(val)
+		}
+	};
+}
+#[allow(dead_code)]
+fn display_message_2(
+	localization: Res<Localization>,
+	locale_settings: Res<LocaleSettings>,
+	mut errors: ResMut<Errors>,
+) {
+	match localization.content(String::from("debug50"), locale_settings) {
+		Err(_) => {
+			errors.errors.push("Cannot load locale item".to_owned());
 		}
 		Ok(val) => {
 			info!(val)

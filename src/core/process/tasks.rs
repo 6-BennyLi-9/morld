@@ -1,10 +1,10 @@
 ﻿use std::collections::HashSet;
 use bevy::prelude::Resource;
-use crate::core::process::tasks::InitialTasks::{CameraSetup, LoadLocales};
 
-#[derive(Eq, Hash, PartialEq)]
+#[derive(Eq, Hash, PartialEq, Debug)]
 pub enum InitialTasks{
 	LoadLocales,
+	LoadAudio,
 	CameraSetup,
 }
 
@@ -20,8 +20,9 @@ impl Default for MorldTasks {
 		};
 
 		for init_item in [
-			LoadLocales,
-			CameraSetup,
+			InitialTasks::LoadLocales,
+			InitialTasks::LoadAudio,
+			InitialTasks::CameraSetup,
 		] {
 			res.init.insert(init_item);
 		}
