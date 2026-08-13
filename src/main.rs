@@ -1,37 +1,35 @@
 mod core;
 
-use self::core::locales::MorldLang;
 use crate::core::MorldCore;
-use crate::core::locales::from_locale;
-use crate::core::types::MorldCoreRuntime;
 use bevy::prelude::*;
+use crate::core::locales::{LocaleSettings, Localization};
+use crate::core::process::game_states::MorldStates;
 
 fn main() {
 	App::new()
 		.add_plugins(DefaultPlugins)
 		.add_plugins(MorldCore)
-		// .add_systems(Update, print)
-		// .add_systems(Update, display_message)
+		.add_systems(Update, print.run_if(in_state(MorldStates::INITIALIZING)))
+		.add_systems(OnEnter(MorldStates::MENU), display_message)
 		.run();
 }
 
 #[allow(dead_code)]
 pub fn print(
-	core: Res<MorldCoreRuntime>,
-	time: Res<Time>,
 ){
-	if let Ok(val) = core.key_input_time(KeyCode::Space, time.elapsed_secs_f64()) {
-		println!("{}", val);
-	}
+	info!("IN STATE: INITIALIZING")
 }
 #[allow(dead_code)]
 fn display_message(
-	core: Res<MorldCoreRuntime>,
-	lang: Res<MorldLang>
+	localization: Res<Localization>,
+	locale_settings: Res<LocaleSettings>,
 ) {
-	if let Some(val) = from_locale("debug", &lang, &core) {
-		info!("{}", val);
-	} else {
-		info!("NONE");
-	}
+	match localization.content(String::from("debug"), locale_settings) {
+		Err(_) => {
+			panic!("Error: Cannot find Object: debug")
+		}
+		Ok(val) => {
+			info!(val)
+		}
+	};
 }
