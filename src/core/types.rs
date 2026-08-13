@@ -33,8 +33,6 @@ impl MFactor{
 	pub fn new(val: f32, from: String) -> MFactor{ MFactor{val, from } }
 }
 
-
-
 #[derive(Component, Debug, Default)]
 pub struct MData{
 	pub basic: f32,
@@ -95,8 +93,8 @@ fn key_input_update(
 	}
 }
 
-pub struct ResInitial;
-impl Plugin for ResInitial {
+pub struct ResourcePlugin;
+impl Plugin for ResourcePlugin {
 	fn build(&self, app: &mut App) {
 		app
 			.insert_resource(MorldCoreRuntime::default())
