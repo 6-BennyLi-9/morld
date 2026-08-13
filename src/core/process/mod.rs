@@ -1,8 +1,8 @@
 ﻿use bevy::app::App;
 use bevy::log::error;
-use bevy::prelude::{in_state, AppExtStates, Commands, IntoScheduleConfigs, NextState, Plugin, Res, ResMut, Update, MessageWriter, MessageReader};
+use bevy::prelude::{in_state, AppExtStates, IntoScheduleConfigs, NextState, Plugin, Res, ResMut, Update, MessageWriter};
 use crate::core::audio::{PlaySound, SoundType};
-use crate::core::process::game_states::{Errors, MorldStates, OnError};
+use crate::core::process::game_states::{Errors, MorldStates};
 use crate::core::process::tasks::MorldTasks;
 
 pub mod tasks;
@@ -22,20 +22,20 @@ fn on_finish_initializing(
 fn on_error(
 	mut next_state: ResMut<NextState<MorldStates>>,
 	mut writer: MessageWriter<PlaySound>,
-	errors: Res<Errors>,
-	reader: MessageReader<OnError>,
+	mut errors: ResMut<Errors>,
 ){
-	if !reader.is_empty() {
+	if !errors.errors.is_empty() {
 		for error in &errors.errors {
 			error!("on_error received! message = {}", error);
 		}
-		
+
 		writer.write(PlaySound{
 			sound: SoundType::Ohno,
 			volume: 1.0,
 		});
-		
+
 		next_state.set(MorldStates::ERR);
+		errors.errors.clear();
 	}
 }
 
@@ -45,7 +45,6 @@ impl Plugin for MorldProcessPlugin {
 			.init_state::<MorldStates>()
 			.init_resource::<MorldTasks>()
 			.init_resource::<Errors>()
-			.add_message::<OnError>()
 			.add_systems(Update, on_finish_initializing.run_if(in_state(MorldStates::INITIALIZING)))
 			.add_systems(Update, on_error);
 	}
