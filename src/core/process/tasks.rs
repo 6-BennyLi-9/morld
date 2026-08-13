@@ -1,7 +1,7 @@
 ﻿use std::collections::HashSet;
 use bevy::prelude::Resource;
 
-#[derive(Eq, Hash, PartialEq)]
+#[derive(Eq, Hash, PartialEq, Debug)]
 pub enum InitialTasks{
 	LoadLocales,
 	LoadAudio,

@@ -5,6 +5,7 @@ use bevy::prelude::*;
 use crate::core::audio::{PlaySound, SoundType};
 use crate::core::locales::{LocaleSettings, Localization};
 use crate::core::process::game_states::MorldStates;
+use crate::core::process::tasks::MorldTasks;
 
 fn main() {
 	App::new()
@@ -17,8 +18,9 @@ fn main() {
 
 #[allow(dead_code)]
 pub fn print(
+	tasks: Res<MorldTasks>
 ){
-	info!("IN STATE: INITIALIZING")
+	info!("INITIALIZING for {:?}", tasks.init);
 }
 #[allow(dead_code)]
 fn display_message(

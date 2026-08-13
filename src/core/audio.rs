@@ -1,8 +1,8 @@
-﻿use bevy::prelude::*;
+﻿use crate::core::process::tasks::InitialTasks::LoadAudio;
+use crate::core::process::tasks::MorldTasks;
 use bevy::audio::Volume;
 use bevy::ecs::message::MessageReader;
-use crate::core::process::tasks::InitialTasks::CameraSetup;
-use crate::core::process::tasks::MorldTasks;
+use bevy::prelude::*;
 
 ///LOAD ALL AUDIOS
 #[derive(Resource)]
@@ -36,8 +36,8 @@ pub fn load_audio_assets(
 	commands.insert_resource(AudioAssets {
 		ohno: asset_server.load("audio/ohno.ogg"),
 	});
-	
-	tasks.init.remove(&CameraSetup);
+
+	tasks.init.remove(&LoadAudio);
 }
 
 pub fn play_sound_effects(
