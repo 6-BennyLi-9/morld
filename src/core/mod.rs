@@ -10,6 +10,7 @@ pub mod types;
 pub mod locales;
 pub mod process;
 pub mod ui;
+pub mod audio;
 
 pub struct MorldCore;
 
