@@ -1,6 +1,0 @@
-﻿(
-    locales: ["zh-CN"],
-    resources: [
-        "debug = DEBUG-ZH-CN",
-    ],
-)

@@ -3481,6 +3481,7 @@ version = "0.1.0"
 dependencies = [
  "bevy",
  "bevy_fluent",
+ "fluent_content",
  "sys-locale",
  "unic-langid",
 ]

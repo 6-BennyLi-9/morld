@@ -6,5 +6,5 @@ pub enum MorldStates {
 	INITIALIZING,
 	EXIT,
 	ERR,
-	Menu,
+	MENU,
 }

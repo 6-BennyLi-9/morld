@@ -13,7 +13,7 @@ fn on_finish_initializing(
 	tasks: Res<MorldTasks>
 ){
 	if tasks.init.is_empty() {
-		next_state.set(MorldStates::Menu);
+		next_state.set(MorldStates::MENU);
 	}
 }
 
