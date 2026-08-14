@@ -1,5 +1,6 @@
 ﻿use bevy::prelude::*;
 use std::collections::HashMap;
+use crate::core::entity::EntityIdGen;
 
 ///核心运行时
 #[derive(Resource, Default, Debug)]
@@ -23,55 +24,6 @@ impl MorldCoreRuntime{
 	}
 }
 
-#[derive(Component, Debug, Default)]
-pub struct MFactor{
-	pub val: f32,
-	pub from: String,
-}
-
-impl MFactor{
-	pub fn new(val: f32, from: String) -> MFactor{ MFactor{val, from } }
-}
-
-#[derive(Component, Debug, Default)]
-pub struct MData{
-	pub basic: f32,
-	pub additions: Vec<MFactor>,
-	pub add_multipliers: Vec<MFactor>,
-	pub times_multipliers: Vec<MFactor>,
-}
-
-impl MData{
-	pub fn final_value(&self) -> f32{
-		(self.basic + self.additions.iter().map(|x| x.val).sum::<f32>())
-			* (self.add_multipliers.iter().map(|x| x.val).sum::<f32>() + 1f32)
-			* (self.times_multipliers.iter().map(|x| x.val + 1f32).product::<f32>())
-	}
-}
-
-///定义标准实体
-#[derive(Component, Debug, Default)]
-pub struct Entity{
-	id: u32,
-	pos: Vec2,
-}
-
-///标识携带生命值的实体
-#[derive(Component, Debug, Default)]
-pub struct Carnal{
-	health: f32,
-	health_maximum: f32,
-
-	amour: MData,
-	magic_resistance: MData,
-}
-
-///标识携带法力值的实体
-#[derive(Component, Debug, Default)]
-pub struct Mage{
-	mana: f32,
-	mana_maximum: f32,
-}
 fn runtime_update(
 	mut core: ResMut<MorldCoreRuntime>,
 	time: Res<Time>,
@@ -98,6 +50,7 @@ impl Plugin for ResourcePlugin {
 	fn build(&self, app: &mut App) {
 		app
 			.insert_resource(MorldCoreRuntime::default())
+			.insert_resource(EntityIdGen::default())
 			.add_systems(Update, runtime_update)
 			.add_systems(Update, key_input_update);
 	}

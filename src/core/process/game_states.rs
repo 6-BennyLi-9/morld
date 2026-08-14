@@ -4,7 +4,7 @@
 pub enum MorldStates {
 	#[default]
 	INITIALIZING,
-	EXIT,
+	GAMING,
 	ERR,
 	MENU,
 }
