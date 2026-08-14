@@ -1,6 +1,6 @@
 ﻿use bevy::app::App;
 use bevy::log::error;
-use bevy::prelude::{in_state, AppExtStates, IntoScheduleConfigs, NextState, Plugin, Res, ResMut, Update, MessageWriter};
+use bevy::prelude::{in_state, AppExtStates, IntoScheduleConfigs, NextState, Plugin, Res, ResMut, Update, MessageWriter, ObserverSystemExt, not, state_exists};
 use crate::core::audio::{PlaySound, SoundType};
 use crate::core::process::game_states::{Errors, MorldStates};
 use crate::core::process::tasks::MorldTasks;
@@ -19,10 +19,11 @@ fn on_finish_initializing(
 	}
 }
 
+/// error 中的数据在后续仍会调用，因此没有清除
 fn on_error(
 	mut next_state: ResMut<NextState<MorldStates>>,
 	mut writer: MessageWriter<PlaySound>,
-	mut errors: ResMut<Errors>,
+	errors: ResMut<Errors>,
 ){
 	if !errors.errors.is_empty() {
 		for error in &errors.errors {
@@ -35,7 +36,6 @@ fn on_error(
 		});
 
 		next_state.set(MorldStates::ERR);
-		errors.errors.clear();
 	}
 }
 
@@ -46,6 +46,6 @@ impl Plugin for MorldProcessPlugin {
 			.init_resource::<MorldTasks>()
 			.init_resource::<Errors>()
 			.add_systems(Update, on_finish_initializing.run_if(in_state(MorldStates::INITIALIZING)))
-			.add_systems(Update, on_error);
+			.add_systems(Update, on_error.run_if(not(in_state(MorldStates::ERR))));
 	}
 }
