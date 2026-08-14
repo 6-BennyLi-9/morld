@@ -15,6 +15,7 @@ fn main() {
 		.add_plugins(MorldMenu)
 		.add_systems(OnEnter(MorldStates::MENU), |mut next_state: ResMut<NextState<MorldStates>>|{next_state.set(MorldStates::GAMING)})
 		.add_systems(Update, print)
+		.add_systems(Update, debug_exit)
 		.add_systems(OnEnter(MorldStates::MENU), display_message)
 		.run();
 }
@@ -56,4 +57,14 @@ fn display_message(
 			info!(val)
 		}
 	};
+}
+
+fn debug_exit(
+	mut errors: ResMut<Errors>,
+	input: Res<ButtonInput<KeyCode>>,
+){
+	if input.all_pressed([KeyCode::F11, KeyCode::F12]) {
+		errors.errors.clear();
+		errors.errors.push("DEBUG EXIT".to_owned());
+	}
 }

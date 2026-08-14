@@ -9,7 +9,7 @@ fn on_error_behaviour(
 	mut commands: Commands,
 	errors: ResMut<Errors>,
 ){
-	commands.spawn(Camera2d);
+	// commands.spawn(Camera2d);
 	let mut text_y = 0f32;
 	commands.spawn((
 		Text2d::new("Interrupted because of errors below."),
