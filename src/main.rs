@@ -2,11 +2,11 @@ mod core;
 pub mod menu;
 
 use crate::core::MorldCore;
-use bevy::prelude::*;
 use crate::core::locales::{LocaleSettings, Localization};
 use crate::core::process::game_states::{Errors, MorldStates};
 use crate::core::process::tasks::MorldTasks;
 use crate::menu::MorldMenu;
+use bevy::prelude::*;
 
 fn main() {
 	App::new()
