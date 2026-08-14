@@ -4,7 +4,7 @@ use crate::core::process::MorldProcessPlugin;
 use crate::core::core_res::ResourcePlugin;
 use crate::core::ui::UIPlugin;
 use bevy::app::{PluginGroup, PluginGroupBuilder};
-use crate::core::entity::PlayerPlugin;
+use crate::core::entity::EntityPlugin;
 
 pub mod core_res;
 pub mod locales;
@@ -23,6 +23,6 @@ impl PluginGroup for MorldCore {
 			.add(LocalePlugin)
 			.add(UIPlugin)
 			.add(AudioPlugin)
-			.add(PlayerPlugin)
+			.add(EntityPlugin)
 	}
 }

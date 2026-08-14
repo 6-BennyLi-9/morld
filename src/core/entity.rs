@@ -1,8 +1,8 @@
-﻿use bevy::app::App;
-use bevy::ecs::schedule::Systems;
-use bevy::math::Vec2;
-use bevy::prelude::{Commands, Component, OnEnter, Plugin, ResMut, Resource};
-use crate::core::process::game_states::MorldStates;
+﻿use crate::core::process::game_states::MorldStates;
+use bevy::app::App;
+use bevy::math::ops::sqrt;
+use bevy::math::{Vec2, Vec3};
+use bevy::prelude::{Commands, Component, OnEnter, Plugin, Query, ResMut, Resource, Transform, Update};
 
 ///玩家标识
 #[derive(Component)]
@@ -107,16 +107,31 @@ impl Mage{
 	}
 }
 
-pub struct PlayerPlugin;
-impl Plugin for PlayerPlugin{
+fn update_transform(
+	mut query: Query<(&mut Transform, &Entity)>,
+){
+	for mut item in &mut query{
+		item.0.translation = Vec3::new(
+			item.1.pos.x,
+			item.1.pos.y / sqrt(2.0),
+			0.0,
+		);
+	}
+}
+
+pub struct EntityPlugin;
+impl Plugin for EntityPlugin {
 	fn build(&self, app: &mut App) {
 		app
 			.add_systems(OnEnter(MorldStates::GAMING),|mut commands: Commands, mut entity_id_gen: ResMut<EntityIdGen>|{
 				commands.spawn((
 					Entity::new(entity_id_gen.next(), Vec2::ZERO),
 					Carnal::new(100.0, 100.0, 10.0, 10.0),
-					Mage::new(0.0, 0.0)
+					Mage::new(0.0, 0.0),
+					Transform::from_translation(Vec3::new(0.0, 0.0, 0.0)),
+					Player
 					));
-			});
+			})
+			.add_systems(Update, update_transform);
 	}
 }
