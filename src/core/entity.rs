@@ -58,8 +58,8 @@ impl MData{
 ///定义标准实体
 #[derive(Component, Debug, Default)]
 pub struct Entity{
-	id: u32,
-	pos: Vec2,
+	pub id: u32,
+	pub pos: Vec2,
 }
 
 impl Entity{
@@ -74,11 +74,11 @@ impl Entity{
 ///标识携带生命值的实体
 #[derive(Component, Debug, Default)]
 pub struct Carnal{
-	health: f32,
-	health_maximum: f32,
+	pub health: f32,
+	pub health_maximum: f32,
 
-	amour: MData,
-	magic_resistance: MData,
+	pub amour: MData,
+	pub magic_resistance: MData,
 }
 
 impl Carnal{
@@ -95,8 +95,8 @@ impl Carnal{
 ///标识携带法力值的实体
 #[derive(Component, Debug, Default)]
 pub struct Mage{
-	mana: f32,
-	mana_maximum: f32,
+	pub mana: f32,
+	pub mana_maximum: f32,
 }
 impl Mage{
 	pub fn new(mana: f32, mana_maximum: f32) -> Self{
