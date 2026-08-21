@@ -24,7 +24,6 @@ fn main() {
 fn print(
 	input: Res<ButtonInput<KeyCode>>,
 	query: Query<(&Entity, &Carnal, &Mage, &Transform, &Player)>,
-	query2: Query<&Carnal>,
 ){
 	if input.just_pressed(KeyCode::F3) {
 		if query.is_empty() {
@@ -39,8 +38,6 @@ fn print(
 				)
 			})
 		}
-
-		query2.iter().for_each(|x| info!("{:?}", x));
 	}
 }
 #[allow(dead_code)]
