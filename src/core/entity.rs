@@ -3,6 +3,7 @@ use bevy::app::App;
 use bevy::math::ops::sqrt;
 use bevy::math::{Vec2, Vec3};
 use bevy::prelude::{Commands, Component, OnEnter, Plugin, Query, ResMut, Resource, Transform, Update};
+use crate::entity::status_buf::EntityStatus;
 
 ///玩家标识
 #[derive(Component)]
@@ -30,7 +31,7 @@ impl MFactor{
 	pub fn new(val: f32, from: String) -> MFactor{ MFactor{val, from } }
 }
 
-#[derive(Component, Debug, Default)]
+#[derive(Component, Debug)]
 pub struct MData{
 	pub basic: f32,
 	pub additions: Vec<MFactor>,
@@ -42,7 +43,9 @@ impl MData{
 	pub fn new(basic: f32) -> Self{
 		Self{
 			basic,
-			..Default::default()
+			additions: Vec::new(),
+			add_multipliers: Vec::new(),
+			times_multipliers: vec![MFactor::new(1f32, "MorldSystem".to_owned())],
 		}
 	}
 }
@@ -51,7 +54,20 @@ impl MData{
 	pub fn final_value(&self) -> f32{
 		(self.basic + self.additions.iter().map(|x| x.val).sum::<f32>())
 			* (self.add_multipliers.iter().map(|x| x.val).sum::<f32>() + 1f32)
-			* (self.times_multipliers.iter().map(|x| x.val + 1f32).product::<f32>())
+			* (self.times_multipliers.iter().map(|x| x.val).product::<f32>())
+	}
+}
+///定义移动相关数据
+#[derive(Component, Debug)]
+pub struct EntityMovement{
+	pub speed: MData,
+}
+
+impl EntityMovement{
+	pub fn new(speed: f32) -> Self{
+		Self{
+			speed: MData::new(speed),
+		}
 	}
 }
 
@@ -72,7 +88,7 @@ impl Entity{
 }
 
 ///标识携带生命值的实体
-#[derive(Component, Debug, Default)]
+#[derive(Component, Debug)]
 pub struct Carnal{
 	pub health: f32,
 	pub health_maximum: f32,
@@ -129,6 +145,8 @@ impl Plugin for EntityPlugin {
 					Carnal::new(100.0, 100.0, 10.0, 10.0),
 					Mage::new(0.0, 0.0),
 					Transform::from_translation(Vec3::new(0.0, 0.0, 0.0)),
+					EntityStatus::default(),
+					EntityMovement::new(10.0),
 					Player
 					));
 			})

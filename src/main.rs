@@ -1,11 +1,13 @@
 mod core;
 pub mod menu;
+pub mod entity;
 
 use crate::core::MorldCore;
 use crate::core::locales::{LocaleSettings, Localization};
 use crate::core::process::game_states::{Errors, MorldStates};
 use crate::menu::MorldMenu;
 use bevy::prelude::*;
+use crate::core::core_res::MorldCoreRuntime;
 use crate::core::entity::{Carnal, Mage, Player, Entity};
 
 fn main() {
@@ -30,11 +32,12 @@ fn print(
 			warn!("cannot found player!");
 		} else {
 			query.iter().for_each(|(entity, carnal, mage, _, _)| {
-				info!("Player[{}]:[Health:{}/{}, Mana:{}/{}, 2Def:({:?},{:?})]",
+				info!("Player[{}]:[Health:{}/{}, Mana:{}/{}, 2Def:({:?},{:?})] at {:?}",
 					entity.id,
 					carnal.health, carnal.health_maximum,
 					mage.mana, mage.mana_maximum,
-					carnal.amour, carnal.magic_resistance
+					carnal.amour, carnal.magic_resistance,
+					entity.pos
 				)
 			})
 		}
@@ -58,9 +61,11 @@ fn display_message(
 
 fn debug_exit(
 	mut errors: ResMut<Errors>,
-	input: Res<ButtonInput<KeyCode>>,
+	input: Res<MorldCoreRuntime>,
+	time: Res<Time>,
 ){
-	if input.all_pressed([KeyCode::F11, KeyCode::F12]) {
+	if input.key_input.get(&KeyCode::F12).unwrap_or(&0f64) - time.elapsed_secs_f64() > 5f64 &&
+		input.key_input.get(&KeyCode::KeyE).unwrap_or(&0f64) - time.elapsed_secs_f64() > 5f64 {
 		errors.errors.clear();
 		errors.errors.push("DEBUG EXIT".to_owned());
 	}
